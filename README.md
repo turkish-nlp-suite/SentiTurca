@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/turkish-nlp-suite/.github/main/profile/sentiturcalogo.png"  width="30%" height="30%">
+<img src="https://raw.githubusercontent.com/turkish-nlp-suite/.github/main/profile/sentiturcalogo.png"  width="40%" height="40%">
 
 # SentiTurca - A Sentiment Analysis Benchmark for Turkish
 
