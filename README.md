@@ -6,7 +6,7 @@ SentiTurca is a sentiment analysis benchmarking dataset for Turkish including th
 
 
 ### Benchmarking
-Benchmarking code can be find under `scripts/`. To run a single task run `run_single.sh`:
+Benchmarking code can be find under `scripts/`. To run a single task run, basically run `./run_single.sh`. This script contains the following lines:
 
 
 ```
@@ -30,8 +30,7 @@ Available task names are:
 - hate
 - movies
 
-
-To run all the tasks in order, please run `run_all.sh`. Benchmarking for BERTurk model and a handful LLMs can be found under the HF repo and the research paper.
+To run all the tasks in order, please run `run_all.sh`. Benchmarking for BERTurk model and a handful LLMs can be found under the [HF repo](https://huggingface.co/datasets/turkish-nlp-suite/SentiTurca) and the [research paper]().
 
 
 
