@@ -463,11 +463,8 @@ def main():
         for index in random.sample(range(len(train_dataset)), 3):
             logger.info(f"Sample {index} of the training set: {train_dataset[index]}.")
 
-    # Get the metric function
-    if data_args.task_name == "movies":
-        metric = evaluate.load("glue", "cola", cache_dir=model_args.cache_dir)
-    else:
-        metric = evaluate.load("glue", "mrpc", cache_dir=model_args.cache_dir)
+    # Get the metric function, acc/F1
+    metric = evaluate.load("glue", "mrpc", cache_dir=model_args.cache_dir)
 
     # You can define your custom compute_metrics function. It takes an `EvalPrediction` object (a namedtuple with a
     # predictions and label_ids field) and has to return a dictionary string to float.
