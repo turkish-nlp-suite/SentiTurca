@@ -199,8 +199,6 @@ def main():
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-
-
     # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -463,18 +461,27 @@ def main():
         for index in random.sample(range(len(train_dataset)), 3):
             logger.info(f"Sample {index} of the training set: {train_dataset[index]}.")
 
-    # Get the metric function, acc/F1
-    metric = evaluate.load("glue", "mrpc", cache_dir=model_args.cache_dir)
+    # ===== Metrics (changed): accuracy + F1 for binary/multi-class =====
+    accuracy_metric = evaluate.load("accuracy", cache_dir=model_args.cache_dir)
+    f1_metric = evaluate.load("f1", cache_dir=model_args.cache_dir)
 
-    # You can define your custom compute_metrics function. It takes an `EvalPrediction` object (a namedtuple with a
-    # predictions and label_ids field) and has to return a dictionary string to float.
     def compute_metrics(p: EvalPrediction):
         preds = p.predictions[0] if isinstance(p.predictions, tuple) else p.predictions
-        preds = np.squeeze(preds) if is_regression else np.argmax(preds, axis=1)
-        result = metric.compute(predictions=preds, references=p.label_ids)
-        if len(result) > 1:
-            result["combined_score"] = np.mean(list(result.values())).item()
-        return result
+
+        if is_regression:
+            preds = np.squeeze(preds)
+            labels = p.label_ids
+            mse = float(np.mean((preds - labels) ** 2))
+            return {"mse": mse}
+
+        preds = np.argmax(preds, axis=1)
+
+        acc = accuracy_metric.compute(predictions=preds, references=p.label_ids)["accuracy"]
+        f1_micro = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
+        f1_macro = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
+
+        return {"accuracy": acc, "f1_micro": f1_micro, "f1_macro": f1_macro}
+    # ================================================================
 
     # Data collator will default to DataCollatorWithPadding when the tokenizer is passed to Trainer, so we change it if
     # we already did the padding.
@@ -596,4 +603,3 @@ def _mp_fn(index):
 
 if __name__ == "__main__":
     main()
-
